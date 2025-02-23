@@ -23,34 +23,47 @@ namespace DiceGames
             _numberOfDice = numberOfDice;
             _minValue = minValue;
             _maxValue = maxValue;
+
+            FactoryMethod();
         }
         protected override void FactoryMethod()
         {
             for (int i = 0; i < _numberOfDice; i++)
             {
-                _diceCollection.Add(new Dice(_minValue, _maxValue));
+                _diceCollection.Add(CreateDiceInstance(_minValue, _maxValue));
             }
+        }
+        protected virtual Dice CreateDiceInstance(int min, int max)
+        {
+            return new Dice(min, max);
         }
 
         public override void PlayGame()
         {
-            int playerScore = RollDice();
-            int computerScore = RollDice();
+            List<int> playerRolls = RollDice(out int playerScore);
+            List<int> computerRolls = RollDice(out int computerScore);
+
+            Console.WriteLine("Значения кубиков игрока: " + string.Join(", ", playerRolls));
+            Console.WriteLine("Значения кубиков компьютера: " + string.Join(", ", computerRolls));
 
             Console.WriteLine($"Счет игрока: {playerScore}");
             Console.WriteLine($"Счет компьютера: {computerScore}");
 
             DetermineOutcome(playerScore, computerScore);
         }
-        private int RollDice()
+        private List<int> RollDice(out int totalScore)
+    {
+        totalScore = 0;
+        List<int> rolls = new List<int>();
+
+        foreach (var dice in _diceCollection)
         {
-            int totalScore = 0;
-            foreach (var dice in _diceCollection)
-            {
-                totalScore += dice.Roll();
-            }
-            return totalScore;
+            int roll = dice.Roll();
+            rolls.Add(roll);
+            totalScore += roll;
         }
+        return rolls;
+    }
         private void DetermineOutcome(int playerScore, int computerScore)
         {
             if (playerScore > computerScore)

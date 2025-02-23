@@ -27,6 +27,9 @@ namespace PokerGame
             List<Card> playerCards = DrawCards(2);
             List<Card> dealerCards = DrawCards(2);
 
+            Console.WriteLine("Карты игрока: " + string.Join(", ", playerCards.Select(card => card.ToString())));
+            Console.WriteLine("Карты дилера: " + string.Join(", ", dealerCards.Select(card => card.ToString())));
+
             int playerScore = CalculateScore(playerCards);
             int dealerScore = CalculateScore(dealerCards);
 

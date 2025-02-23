@@ -7,6 +7,8 @@ namespace Poker
     { 
         private readonly List<CasinoGameBase> _games = new List<CasinoGameBase>();
         private string _playerProfile;
+        private string _playerName;
+        private decimal _playerBankroll;
 
         public Casino()
         {
@@ -49,21 +51,37 @@ namespace Poker
         {
             if (File.Exists("playerProfile.txt"))
             {
-                _playerProfile = File.ReadAllText("playerProfile.txt");
-                Console.WriteLine($"Профиль игрока загружен: {_playerProfile}");
+                try
+                {
+                    _playerProfile = File.ReadAllText("playerProfile.txt");
+                    Console.WriteLine($"Профиль игрока загружен: {_playerProfile}");
+                    Console.WriteLine($"Ваш текущий банк: {_playerBankroll}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка при загрузке профиля: {ex.Message}");
+                }
             }
             else
             {
                 Console.WriteLine("Профиль не найден, создайте новый.");
                 Console.WriteLine("Введите имя игрока: ");
-                _playerProfile = Console.ReadLine();
+                _playerName = Console.ReadLine();
+                _playerBankroll = 100;
                 SavePlayerProfile();
             }
         }
         private void SavePlayerProfile()
         {
-            File.WriteAllText("playerPrifile.txt", _playerProfile);
-            Console.WriteLine("Профиль игрока сохранен");
+            try
+            {
+                File.WriteAllLines("playerProfile.txt", new string[] { _playerName, _playerBankroll.ToString()});
+                Console.WriteLine("Профиль игрока сохранен");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при сохранении профиля: {ex.Message}");
+            }
         }
     }
 }
